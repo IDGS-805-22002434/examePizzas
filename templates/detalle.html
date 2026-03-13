@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row mt-4 mb-5 justify-content-center">
+    <div class="col-md-8">
+        <div class="nota-box">
+            <h4 class="fw-bold mb-4 border-bottom pb-2">Detalle del Pedido #{{ pedido.id_pedido }}</h4>
+            
+            <div class="mb-4">
+                <p class="mb-1"><strong>Nombre completo del comprador:</strong> {{ pedido.cliente.nombre }}</p>
+                <p class="mb-1"><strong>Dirección:</strong> {{ pedido.cliente.direccion }}</p>
+                <p class="mb-1"><strong>Teléfono:</strong> {{ pedido.cliente.telefono }}</p>
+                <p class="mb-1"><strong>Fecha de compra:</strong> {{ pedido.fecha.strftime('%Y-%m-%d') }}</p>
+            </div>
+
+            <table border="1" cellpadding="8" cellspacing="0" class="w-100 text-center bg-white">
+                <thead class="bg-light">
+                    <tr>
+                        <th>Cantidad</th>
+                        <th>Tamaño</th>
+                        <th>Ingredientes</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for detalle in pedido.detalles %}
+                    <tr>
+                        <td>{{ detalle.cantidad }}</td>
+                        <td>{{ detalle.pizza.tamano }}</td>
+                        <td>{{ detalle.pizza.ingredientes }}</td>
+                        <td><strong>${{ detalle.subtotal }}</strong></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <h3 class="text-end mt-4 fw-bold">Total a pagar: ${{ pedido.total }}</h3>
+            
+            <div class="text-center mt-5">
+                <a href="{{ url_for('reportes') }}" class="btn btn-outline-dark px-5">Volver a Reportes</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

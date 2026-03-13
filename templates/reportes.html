@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+{% import "_macros.html" as macros %}
+
+{% block content %}
+<div class="row mt-4 mb-5">
+    <div class="col-md-4">
+        <div class="form-section h-100">
+            <h5 class="fw-bold mb-3 border-bottom pb-2">Filtros de Búsqueda</h5>
+            <form method="POST" action="{{ url_for('reportes') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                
+                <div class="mb-4">
+                    {{ form.tipo_filtro.label(class="fw-bold d-block mb-2") }}
+                    {% for subfield in form.tipo_filtro %}
+                        <div class="form-check form-check-inline">
+                            {{ subfield(class="form-check-input") }}
+                            {{ subfield.label(class="form-check-label") }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.dia.label(class="fw-bold mb-1") }}
+                    {{ form.dia(class="form-select") }}
+                </div>
+
+                <div class="mb-4">
+                    {{ form.mes.label(class="fw-bold mb-1") }}
+                    {{ form.mes(class="form-select") }}
+                </div>
+
+                <button type="submit" class="btn btn-outline-dark w-100 mb-2">Buscar Ventas</button>
+                <a href="{{ url_for('pizza') }}" class="btn btn-light w-100">Volver al Inicio</a>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="nota-box h-100">
+            <h4 class="text-center fw-bold mb-4">Resultados de Ventas</h4>
+            
+            <table border="1" cellpadding="8" cellspacing="0" class="w-100 text-center bg-white">
+                <thead class="bg-light">
+                    <tr>
+                        <th>ID Venta</th>
+                        <th>Cliente</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Detalles</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pedido in pedidos %}
+                    <tr>
+                        <td>#{{ pedido.id_pedido }}</td>
+                        <td>{{ pedido.cliente.nombre }}</td>
+                        <td>{{ pedido.fecha.strftime('%Y-%m-%d') }}</td>
+                        <td><strong>${{ pedido.total }}</strong></td>
+                        <td>
+                            <a href="{{ url_for('detalle_pedido', id_pedido=pedido.id_pedido) }}" class="btn btn-sm btn-outline-info">Ver Detalle</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-muted py-4">No se encontraron ventas con los filtros seleccionados.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% if pedidos %}
+            <div class="text-end mt-4">
+                <h4 class="fw-bold">Total Acumulado: <span class="text-success">${{ total_acumulado }}</span></h4>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
